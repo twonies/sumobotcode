@@ -11,11 +11,11 @@ const int sensorPinL = 8; //FLOOR SENSORS LEFT
 const int leftServoPin = 6; //LEFT SERVO
 const int rightServoPin = 5; //RIGHT SERVO
 const int button = 11; //BUTTON TO PRESS
-int buttonVal;
-const int black=200;
+int buttonVal; //setting the int to hold the buttonval
+const int black=200; //the value that is at the edge of white/black for the qt1 sensors
 const int tim=1; //SETS THE DELAY ON MOTORS *NEW*
 Servo servoLeft; //SETS UP THE SERVOS
-Servo servoRight;
+Servo servoRight; //servosetup
 
 
 
@@ -35,27 +35,29 @@ void setup() {
 
 
 void loop() {
-int irLeft=irDetect(leftIrLed, leftIrReciever, 38000);
+int irLeft=irDetect(leftIrLed, leftIrReciever, 38000); //Calls the booklet function to read the IR sensors
 int irRight=irDetect(rightIrLed,rightIrReciever,38000);
 // to start off we digital read the button
 buttonVal=digitalRead(button); // reads value of button
-Serial.println(buttonVal);
-Serial.println(RCtime(sensorPinR));
-Serial.println(RCtime(sensorPinL));
- // Serial.println(buttonVal); //*DEBUG* prints value of button *DEBUG*/
+Serial.println(buttonVal); // prints the button if 1 or 0 (high, low) for troubleshooting
+Serial.println(RCtime(sensorPinR)); // prints the qt1 sensor right for troubleshooting
+Serial.println(RCtime(sensorPinL)); // prints the qt1 sensor left for troubleshooting
 
-// starts the if command for the inital button presses stops for 5 seconds
+// starts the if command for the inital button presses and stops for 5 seconds
    if (buttonVal==1) {
   servoLeft.writeMicroseconds(1500); //stationary motors
   servoRight.writeMicroseconds(1500); //stati onary motors
-  tone(piez,500,5000); //plays tune for 2000ms (2s)
-  //delay(4000); //delay 3000ms (3s)
+  tone(piez,500,5000); //delay of 5000ms(5s)
 } else if (buttonVal==0) {
+  //if the button isn't pressed it executes the normal behaviour  
   if ( RCtime(sensorPinR)<300 || RCtime(sensorPinL)<300){
+    // this if statement only reads the button qt1 sensors to determine if it should back up or not
     servoLeft.writeMicroseconds(2000);
     servoRight.writeMicroseconds(1000);
     delay(2000);
   } else if(( RCtime(sensorPinR)>300 || RCtime(sensorPinL)>300)) {
+    // if the qt1 sensors see's it on then it does normal attack functions
+
 // this here sets the two IR detectors up to see and recieve the 38kHz freq
 
 Serial.print(" Left: ");
@@ -86,7 +88,7 @@ if (irRight==0 && irLeft==0){
 
  //   delay(tim);
 
-//STATIONARY
+//sees nothing so it does a small turn
 } else {
   servoLeft.writeMicroseconds(1480); //counterclock
   servoRight.writeMicroseconds(1500); //clocky
